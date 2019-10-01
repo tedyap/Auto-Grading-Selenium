@@ -5,8 +5,9 @@ import pandas as pd
 from selenium import webdriver
 from time import sleep
 
-sleeptime = 5
+sleeptime = 4.5
 assignment_name = sys.argv[1]
+url = sys.argv[2]
 
 # import grade from csv file
 data = pd.read_csv("/Users/tedyap/Desktop/CS125/Fall-2019/" + assignment_name + "/" + assignment_name + "/grades.csv")
@@ -14,7 +15,7 @@ student = data["name"].tolist()
 grade = data["grade"].tolist()
 
 driver = webdriver.Chrome("/usr/local/bin/chromedriver")
-driver.get("https://courses.iwu.edu/mod/assign/view.php?id=271976&action=grader")
+driver.get(url)
 
 submit = driver.find_element_by_xpath("/html/body/div[1]/div[2]/div/div/section/div/div/div/div[1]/a")
 submit.click()
@@ -45,7 +46,9 @@ for i in range(len(student)):
 	# upload feedback files
 	sleep(sleeptime)
 	element = driver.find_element_by_xpath('//*[@name="repo_upload_file"]')
-	file_name = os.listdir("/Users/tedyap/Desktop/CS125/Fall-2019/" + assignment_name + "/" + assignment_name + "/" + name.text + "/")[0]
+	for file in os.listdir("/Users/tedyap/Desktop/CS125/Fall-2019/" + assignment_name + "/" + assignment_name + "/" + name.text + "/"):
+        if not file.startswith('.'):
+        	file_name = file
 	element.send_keys("/Users/tedyap/Desktop/CS125/Fall-2019/" + assignment_name + "/" + assignment_name + "/" + name.text + "/" + file_name + "/" + assignment_name + ".ipynb.pdf")
 
 	sleep(sleeptime)
