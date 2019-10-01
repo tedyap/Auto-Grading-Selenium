@@ -5,9 +5,9 @@ import pandas as pd
 from selenium import webdriver
 from time import sleep
 
-sleeptime = 4.5
+sleeptime = 5
 assignment_name = sys.argv[1]
-url = sys.argv[2]
+id_num = sys.argv[2]
 
 # import grade from csv file
 data = pd.read_csv("/Users/tedyap/Desktop/CS125/Fall-2019/" + assignment_name + "/" + assignment_name + "/grades.csv")
@@ -15,12 +15,12 @@ student = data["name"].tolist()
 grade = data["grade"].tolist()
 
 driver = webdriver.Chrome("/usr/local/bin/chromedriver")
-driver.get(url)
+driver.get("https://courses.iwu.edu/mod/assign/view.php?id=" + id_num + "&action=grader")
 
 submit = driver.find_element_by_xpath("/html/body/div[1]/div[2]/div/div/section/div/div/div/div[1]/a")
 submit.click()
 
-# login 
+# login with username and password
 username = driver.find_element_by_id("username")
 username.send_keys("username")
 
@@ -29,6 +29,7 @@ password.send_keys("password")
 
 submit = driver.find_element_by_xpath("/html/body/div/div/div/div/form/section[3]/input[4]")
 submit.click()
+
 
 for i in range(len(student)):
 	sleep(sleeptime)
@@ -46,9 +47,11 @@ for i in range(len(student)):
 	# upload feedback files
 	sleep(sleeptime)
 	element = driver.find_element_by_xpath('//*[@name="repo_upload_file"]')
+	
+	#ignore hidden files
 	for file in os.listdir("/Users/tedyap/Desktop/CS125/Fall-2019/" + assignment_name + "/" + assignment_name + "/" + name.text + "/"):
-        if not file.startswith('.'):
-        	file_name = file
+	    if not file.startswith("."):
+		    file_name = file
 	element.send_keys("/Users/tedyap/Desktop/CS125/Fall-2019/" + assignment_name + "/" + assignment_name + "/" + name.text + "/" + file_name + "/" + assignment_name + ".ipynb.pdf")
 
 	sleep(sleeptime)
